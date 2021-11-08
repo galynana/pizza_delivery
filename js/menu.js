@@ -1,7 +1,11 @@
-const cardsMenu = document.querySelector('.cards-menu');
+const menu = () => {
+    const cardsMenu = document.querySelector('.cards-menu');
+    const cardArray = localStorage.getItem('card') ? 
+    JSON.parse(localStorage.getItem('card')) : 
+    [];
 
-const changeTitle = (restaurant) => {
-    console.log(restaurant);
+   const changeTitle = (restaurant) => {
+   console.log(restaurant);
    const restaurantTitle = document.querySelector('.restaurant-title')
    restaurantTitle.textContent = restaurant.name
    const rating = document.querySelector('.rating')
@@ -11,6 +15,23 @@ const changeTitle = (restaurant) => {
    const category = document.querySelector('.category')
    category.textContent = restaurant.kitchen
 }
+
+  const addToCard = (cardItem) => {
+   if (cardArray.some((item) => item.id === cardItem.id)) {
+      cardArray.map((item) => {
+          if(item.id === cardItem.id) {
+              item.count++
+          }
+
+          return item
+      })
+   }else {
+    cardArray.push(cardItem);
+   }
+    
+
+    localStorage.setItem('card', JSON.stringify(cardArray));
+  }
 
 const renderItems = (data) => {
     data.forEach(({description, id, image, name, price}) => {
@@ -40,6 +61,15 @@ const renderItems = (data) => {
             </div>
         </div>
         `
+        card.querySelector('.button-card-text').addEventListener('click', () => {
+            const cardItem = {
+                name,
+                price,
+                count: 1,
+                id
+            }
+            addToCard(cardItem)
+        });
 
     cardsMenu.append(card)
 
@@ -62,4 +92,5 @@ if (localStorage.getItem('restaurant')) {
 }else {
     window.location.href = '/'
 }
-
+}
+    menu();
